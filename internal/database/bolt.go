@@ -2,13 +2,18 @@ package database
 
 import (
 	"errors"
+	"os"
 	"path/filepath"
 
 	bolt "go.etcd.io/bbolt"
 )
 
 func Open(username string) (*bolt.DB, error) {
-	path := filepath.Join(".", "users", username+".db")
+	dir, err := os.UserConfigDir()
+	if err != nil {
+		return nil, err
+	}
+	path := filepath.Join(dir, "SentryVault", "users", username+".db")
 	db, err := bolt.Open(path, 0600, nil)
 	if err != nil {
 		return nil, err
